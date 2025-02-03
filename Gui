@@ -1,0 +1,131 @@
+-- Tạo ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Tạo Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.6, 0, 0.75, 0)
+frame.Position = UDim2.new(0.2, 0, 0.125, 0)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.BorderSizePixel = 2
+frame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+frame.Parent = screenGui
+
+-- Bo tròn góc Frame
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0.1, 0)
+frameCorner.Parent = frame
+
+-- Tạo tiêu đề
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.15, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.Text = "Skid Hub V2"
+title.TextSize = 36
+title.Font = Enum.Font.GothamBold
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1
+title.Parent = frame
+
+-- Tạo TabHolder
+local tabHolder = Instance.new("Frame")
+tabHolder.Size = UDim2.new(1, 0, 0.1, 0)
+tabHolder.Position = UDim2.new(0, 0, 0.15, 0)
+tabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+tabHolder.BorderSizePixel = 2
+tabHolder.BorderColor3 = Color3.fromRGB(255, 255, 255)
+tabHolder.Parent = frame
+
+local tabCorner = Instance.new("UICorner")
+tabCorner.CornerRadius = UDim.new(0.1, 0)
+tabCorner.Parent = tabHolder
+
+-- Tạo Tab "Main"
+local mainTab = Instance.new("TextButton")
+mainTab.Size = UDim2.new(0.3, 0, 1, 0)
+mainTab.Position = UDim2.new(0.05, 0, 0, 0)
+mainTab.Text = "Main"
+mainTab.TextSize = 24
+mainTab.Font = Enum.Font.GothamBold
+mainTab.TextColor3 = Color3.fromRGB(255, 255, 255)
+mainTab.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+mainTab.BorderSizePixel = 2
+mainTab.BorderColor3 = Color3.fromRGB(255, 255, 255)
+mainTab.Parent = tabHolder
+
+local mainTabCorner = Instance.new("UICorner")
+mainTabCorner.CornerRadius = UDim.new(0.1, 0)
+mainTabCorner.Parent = mainTab
+
+-- Tạo Main Content
+local mainContent = Instance.new("Frame")
+mainContent.Size = UDim2.new(1, 0, 0.75, 0)
+mainContent.Position = UDim2.new(0, 0, 0.25, 0)
+mainContent.BackgroundTransparency = 1
+mainContent.Parent = frame
+
+-- Tạo nút Play
+local playButton = Instance.new("TextButton")
+playButton.Size = UDim2.new(0.8, 0, 0.15, 0)
+playButton.Position = UDim2.new(0.1, 0, 0.2, 0)
+playButton.Text = "Play"
+playButton.TextSize = 28
+playButton.Font = Enum.Font.GothamBold
+playButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+playButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+playButton.BorderSizePixel = 2
+playButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+playButton.Parent = mainContent
+
+-- Bo tròn góc Play Button
+local playButtonCorner = Instance.new("UICorner")
+playButtonCorner.CornerRadius = UDim.new(0.2, 0)
+playButtonCorner.Parent = playButton
+
+-- Tạo nút Exit
+local exitButton = Instance.new("TextButton")
+exitButton.Size = UDim2.new(0.8, 0, 0.15, 0)
+exitButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+exitButton.Text = "Exit"
+exitButton.TextSize = 28
+exitButton.Font = Enum.Font.GothamBold
+exitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+exitButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+exitButton.BorderSizePixel = 2
+exitButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+exitButton.Parent = mainContent
+
+-- Bo tròn góc Exit Button
+local exitButtonCorner = Instance.new("UICorner")
+exitButtonCorner.CornerRadius = UDim.new(0.2, 0)
+exitButtonCorner.Parent = exitButton
+
+-- Hiệu ứng khi nhấn nút
+local function onButtonHover(button)
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = button.BackgroundColor3:Lerp(Color3.fromRGB(255, 255, 255), 0.2)
+        button.TextColor3 = Color3.fromRGB(0, 0, 0)
+    end)
+    button.MouseLeave:Connect(function()
+        if button == playButton then
+            button.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+        else
+            button.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+        end
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end)
+end
+
+onButtonHover(playButton)
+onButtonHover(exitButton)
+
+-- Chức năng khi nhấn nút Play
+playButton.MouseButton1Click:Connect(function()
+    print("Game started!")
+    screenGui:Destroy() -- Ẩn menu khi nhấn Play
+end)
+
+-- Chức năng khi nhấn nút Exit
+exitButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy() -- Đóng menu
+end)
