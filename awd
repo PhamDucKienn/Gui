@@ -1,125 +1,56 @@
--- Create the GUI framework
-local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local TabHolder = Instance.new("Frame")
-local ContentFrame = Instance.new("Frame")
-local UIListLayout = Instance.new("UIListLayout")
+-- Create a ScreenGui to hold our GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TabbedGUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Parent the GUI to the player's screen
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-ScreenGui.Name = "TabbedGUI"
+-- Main Frame to contain everything
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Parent = screenGui
+mainFrame.Size = UDim2.new(0.5, 0, 0.5, 0) -- Half the screen width and height
+mainFrame.Position = UDim2.new(0.25, 0, 0.25, 0) -- Centered on screen
+mainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark background
+mainFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+mainFrame.BorderSizePixel = 2
 
--- Main Frame properties
-MainFrame.Name = "MainFrame"
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-MainFrame.Size = UDim2.new(0.4, 0, 0.6, 0)
-MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-MainFrame.BorderSizePixel = 0
+-- Top Bar for Tabs
+local topBarFrame = Instance.new("Frame")
+topBarFrame.Name = "TopBarFrame"
+topBarFrame.Parent = mainFrame
+topBarFrame.Size = UDim2.new(1, 0, 0.1, 0) -- 10% height of main frame
+topBarFrame.Position = UDim2.new(0, 0, 0, 0)
+topBarFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+topBarFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+topBarFrame.BorderSizePixel = 1
 
--- Tab Holder (for tabs on the left)
-TabHolder.Name = "TabHolder"
-TabHolder.Parent = MainFrame
-TabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-TabHolder.Size = UDim2.new(0.3, 0, 1, 0)
-TabHolder.BorderSizePixel = 0
+-- Content Frame to hold tab content (will be switched)
+local contentFrame = Instance.new("Frame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Parent = mainFrame
+contentFrame.Size = UDim2.new(1, 0, 0.9, 0) -- 90% height of main frame (remaining space)
+contentFrame.Position = UDim2.new(0, 0, 0.1, 0)
+contentFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+contentFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+contentFrame.BorderSizePixel = 1
+contentFrame.ClipsDescendants = true -- Important to hide content outside the frame
 
--- Content Frame (for displaying content of tabs)
-ContentFrame.Name = "ContentFrame"
-ContentFrame.Parent = MainFrame
-ContentFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ContentFrame.Size = UDim2.new(0.7, 0, 1, 0)
-ContentFrame.Position = UDim2.new(0.3, 0, 0, 0)
-ContentFrame.BorderSizePixel = 0
+-- Function to create a tab button
+local function createTabButton(tabName, tabIndex, tabFrames)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabName .. "TabButton"
+    tabButton.Parent = topBarFrame
+    tabButton.Size = UDim2.new(0, 100, 1, 0) -- Fixed width, full top bar height
+    tabButton.Position = UDim2.new(0, tabIndex * 100, 0, 0) -- Position based on index
+    tabButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    tabButton.TextColor3 = Color3.White
+    tabButton.Font = Enum.Font.SourceSansBold
+    tabButton.TextSize = 16
+    tabButton.Text = tabName
+    tabButton.BorderColor3 = Color3.fromRGB(80, 80, 80)
+    tabButton.BorderSizePixel = 1
 
--- UIListLayout for organizing tabs
-UIListLayout.Parent = TabHolder
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
--- Function to create a new tab
-local function createTab(tabName)
-    local TabButton = Instance.new("TextButton")
-    TabButton.Parent = TabHolder
-    TabButton.Text = tabName
-    TabButton.Size = UDim2.new(1, 0, 0, 50)
-    TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TabButton.BorderSizePixel = 0
-    TabButton.Font = Enum.Font.SourceSans
-    TabButton.TextSize = 18
-
-    -- Create a corresponding frame in ContentFrame
-    local TabContent = Instance.new("Frame")
-    TabContent.Parent = ContentFrame
-    TabContent.Name = tabName .. "Content"
-    TabContent.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    TabContent.Size = UDim2.new(1, 0, 1, 0)
-    TabContent.Visible = false
-
-    -- When the tab is clicked, display the corresponding content
-    TabButton.MouseButton1Click:Connect(function()
-        -- Hide all other content frames
-        for _, frame in pairs(ContentFrame:GetChildren()) do
-            if frame:IsA("Frame") then
-                frame.Visible = false
-            end
+    tabButton.MouseButton1Click:Connect(function()
+        -- Deactivate all content frames
+        for _, frame in ipairs(tabFrames) do
+            frame.Visible = false
         end
-        -- Show the selected tab's content
-        TabContent.Visible = true
-    end)
-
-    return TabContent
-end
-
--- Function to create buttons inside a tab
-local function createButton(parent, buttonText, callback)
-    local Button = Instance.new("TextButton")
-    Button.Parent = parent
-    Button.Text = buttonText
-    Button.Size = UDim2.new(0.8, 0, 0, 40)
-    Button.Position = UDim2.new(0.1, 0, 0, #parent:GetChildren() * 50)
-    Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.BorderSizePixel = 0
-    Button.Font = Enum.Font.SourceSans
-    Button.TextSize = 16
-
-    -- Connect the button to the callback function
-    Button.MouseButton1Click:Connect(function()
-        if callback then
-            callback()
-        end
-    end)
-end
-
--- Create tabs and buttons
-local tab1 = createTab("Tab 1")
-local tab2 = createTab("Tab 2")
-local tab3 = createTab("Tab 3")
-
--- Add buttons to Tab 1
-createButton(tab1, "Button 1", function()
-    print("Button 1 in Tab 1 clicked!")
-end)
-createButton(tab1, "Button 2", function()
-    print("Button 2 in Tab 1 clicked!")
-end)
-
--- Add buttons to Tab 2
-createButton(tab2, "Button 1", function()
-    print("Button 1 in Tab 2 clicked!")
-end)
-createButton(tab2, "Button 2", function()
-    print("Button 2 in Tab 2 clicked!")
-end)
-
--- Add buttons to Tab 3
-createButton(tab3, "Button 1", function()
-    print("Button 1 in Tab 3 clicked!")
-end)
-createButton(tab3, "Button 2", function()
-    print("Button 2 in Tab 3 clicked!")
-end)
-
--- Show the first tab by default
-ContentFrame:FindFirstChild("Tab 1Content").Visible = true
