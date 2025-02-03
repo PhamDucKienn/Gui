@@ -1,0 +1,56 @@
+-- Create a ScreenGui to hold our GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TabbedGUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Frame to contain everything
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Parent = screenGui
+mainFrame.Size = UDim2.new(0.5, 0, 0.5, 0) -- Half the screen width and height
+mainFrame.Position = UDim2.new(0.25, 0, 0.25, 0) -- Centered on screen
+mainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark background
+mainFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+mainFrame.BorderSizePixel = 2
+
+-- Top Bar for Tabs
+local topBarFrame = Instance.new("Frame")
+topBarFrame.Name = "TopBarFrame"
+topBarFrame.Parent = mainFrame
+topBarFrame.Size = UDim2.new(1, 0, 0.1, 0) -- 10% height of main frame
+topBarFrame.Position = UDim2.new(0, 0, 0, 0)
+topBarFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+topBarFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+topBarFrame.BorderSizePixel = 1
+
+-- Content Frame to hold tab content (will be switched)
+local contentFrame = Instance.new("Frame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Parent = mainFrame
+contentFrame.Size = UDim2.new(1, 0, 0.9, 0) -- 90% height of main frame (remaining space)
+contentFrame.Position = UDim2.new(0, 0, 0.1, 0)
+contentFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+contentFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+contentFrame.BorderSizePixel = 1
+contentFrame.ClipsDescendants = true -- Important to hide content outside the frame
+
+-- Function to create a tab button
+local function createTabButton(tabName, tabIndex, tabFrames)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabName .. "TabButton"
+    tabButton.Parent = topBarFrame
+    tabButton.Size = UDim2.new(0, 100, 1, 0) -- Fixed width, full top bar height
+    tabButton.Position = UDim2.new(0, tabIndex * 100, 0, 0) -- Position based on index
+    tabButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    tabButton.TextColor3 = Color3.White
+    tabButton.Font = Enum.Font.SourceSansBold
+    tabButton.TextSize = 16
+    tabButton.Text = tabName
+    tabButton.BorderColor3 = Color3.fromRGB(80, 80, 80)
+    tabButton.BorderSizePixel = 1
+
+    tabButton.MouseButton1Click:Connect(function()
+        -- Deactivate all content frames
+        for _, frame in ipairs(tabFrames) do
+            frame.Visible = false
+        end
